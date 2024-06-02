@@ -12,16 +12,16 @@ unset($_SESSION['resultMessage']);
 
 
 
-$id = $_SESSION['id'];
-$name = $_SESSION['name'];
-$depart = $_SESSION['depart'];
-$gender = $_SESSION['gender'];
-$phone = $_SESSION['phone'];
-$password = $_SESSION['password'];
-$admin = $_SESSION['admin'];
+// $id = $_SESSION['id'];
+// $name = $_SESSION['name'];
+// $depart = $_SESSION['depart'];
+// $gender = $_SESSION['gender'];
+// $phone = $_SESSION['phone'];
+// $password = $_SESSION['password'];
+// $admin = $_SESSION['admin'];
 
 
-$sql = "SELECT name, id, message, c_date FROM chatlist";
+$sql = "SELECT name, id, message, c_date, fileName FROM chatlist";
 $result = $mysqli->query($sql);
 
 
@@ -56,6 +56,7 @@ $mysqli->close();
 <html>
 <head>
     <title>Chatter</title>
+    <meta charset="UTF-8">
         <style type="text/css">
     p, form {
         background-color: white;
@@ -86,7 +87,15 @@ foreach ($rows as $row) {
         [<?php echo htmlspecialchars($row['c_date']); ?>]
     </span>
     <br>
-    <?php echo htmlspecialchars($row['message']); ?>
+    <?php 
+    if($row['fileName']==NULL){
+        echo htmlspecialchars($row['message']); 
+    }else{
+        echo "<a href='" . $row['message'] . "' download>" . htmlspecialchars($row['fileName'], ENT_QUOTES, 'UTF-8') . "</a>";
+    }
+
+    ?>
+    
     <br><br>
 <?php
 }
@@ -104,8 +113,24 @@ foreach ($rows as $row) {
     </select>
 </form>
 
+<form action="put.php" method="post" enctype="multipart/form-data">
+        <label for="file">Select file to upload:</label>
+        <input type="file" name="file" id="file"><br>
+        <input type="hidden" name="filename" id="filename">
+        <input type="submit" value="Upload File" name="submit">
+    </form>
 
+    <script>
+    // Get the file input element
+    var fileInput = document.getElementById('file');
 
+    // Add event listener for change event
+    fileInput.addEventListener('change', function() {
+        // When a file is selected, set the value of the hidden input field to the filename
+        var filenameInput = document.getElementById('filename');
+        filenameInput.value = fileInput.files[0].name;
+    });
+</script>
 
 <script>
 function addFace() {
@@ -148,7 +173,7 @@ function submitForm() {
   document.getElementById("hiddenForm").submit();
 }
 </script>
-
+#this is a test for git merge process
 <?php
 } else {
 ?>
