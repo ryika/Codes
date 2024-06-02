@@ -70,36 +70,64 @@ $mysqli->close();
         background-repeat: repeat; /* 背景画像の繰り返しを指定 */
         background-size: 800px; /* 背景画像のサイズを指定 */
     }
+    .text {
+  max-width: 240px;
+  text-align: center;
+  margin-left: auto;
+}
+
+.text span {
+  display: inline-block;
+  text-align: left;
+}
 </style>
 
 
 
 <p>
-<?php
-foreach ($rows as $row) {
-?>
-    <font face="serif">
-    <b><?php echo htmlspecialchars($row['name']); ?></b>
-    <span style="color: silver; font-size: small;">
-</style>
-</style>
-        @<?php echo htmlspecialchars($row['id']); ?>
-        [<?php echo htmlspecialchars($row['c_date']); ?>]
-    </span>
-    <br>
-    <?php 
-    if($row['fileName']==NULL){
-        echo htmlspecialchars($row['message']); 
-    }else{
-        echo "<a href='" . $row['message'] . "' download>" . htmlspecialchars($row['fileName'], ENT_QUOTES, 'UTF-8') . "</a>";
-    }
-
-    ?>
-    
-    <br><br>
-<?php
-}
-?>
+<div style="background-color: white; width: 400px; margin: auto; padding: 2em;">
+    <?php foreach ($rows as $row) {
+        if($row['id']==$_SESSION['userid']){?>
+        <div style="text-align: right;">
+            <font face="serif">
+                <b><?php echo htmlspecialchars($row['name']); ?></b>
+                <span style="color: silver; font-size: small;">
+                    @<?php echo htmlspecialchars($row['id']); ?>
+                    [<?php echo htmlspecialchars($row['c_date']); ?>]
+                </span>
+            </font>
+            <br>
+            <?php if ($row['fileName'] == NULL) {
+                // Output the message with line breaks converted to <br> tags
+                echo '<div class="text"><span>' . nl2br(htmlspecialchars($row['message'])) . '</span></div>';
+            }  else {
+                // Output a download link for the file
+                echo "<a href='" . htmlspecialchars($row['message']) . "' download>" . htmlspecialchars($row['fileName'], ENT_QUOTES, 'UTF-8') . "</a>";
+            } ?>
+        </div>
+        <br><br>
+    <?php }else{ ?>
+        <div style="text-align: left;">
+            <font face="serif">
+                <b><?php echo htmlspecialchars($row['name']); ?></b>
+                <span style="color: silver; font-size: small;">
+                    @<?php echo htmlspecialchars($row['id']); ?>
+                    [<?php echo htmlspecialchars($row['c_date']); ?>]
+                </span>
+            </font>
+            <br>
+            <?php if ($row['fileName'] == NULL) {
+                // Output the message with line breaks converted to <br> tags
+                echo "<pre>" . htmlspecialchars($row['message']) . "</pre>";
+        } else {
+                // Output a download link for the file
+                echo "<a href='" . htmlspecialchars($row['message']) . "' download>" . htmlspecialchars($row['fileName'], ENT_QUOTES, 'UTF-8') . "</a>";
+            } ?>
+        </div>
+        <br><br>
+    <?php }
+    } ?>
+</div>
 </p>
 <hr>
 
@@ -110,6 +138,15 @@ foreach ($rows as $row) {
         <option value="">顔文字はこちら</option>
         <option value="(～￣▽￣)～">(～￣▽￣)～</option>
         <option value="(☝ ՞ਊ ՞)☝">(☝ ՞ਊ ՞)☝</option>
+        <option value="
+        キュイ━━━━ン
+        　　　∧,,∧
+        　　 (・ω・｀) /|　
+        　／くＴ￣￣二=二] 三二─
+        　￣￣￣＼二＼
+        ">
+        キュイ━━━━ン
+        </option>
     </select>
 </form>
 
@@ -137,9 +174,8 @@ function addFace() {
     var faceSelect = document.getElementById("faceForm").getElementsByTagName("select")[0];
     var selectedFace = faceSelect.options[faceSelect.selectedIndex].value;
     var textarea = document.getElementsByName("chat")[0];
-    textarea.value += selectedFace;
+    textarea.value += selectedFace; // Add newline character after appending the face
 }
-
 
 </script>
 

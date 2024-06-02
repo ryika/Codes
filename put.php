@@ -122,7 +122,7 @@ $_SESSION['resultMessage'] = $resultMessage;
 
 
 // chatter.phpにリダイレクト
-// header("Location: chatter.php");
+header("Location: chatter.php");
 // exit();
 #
 
